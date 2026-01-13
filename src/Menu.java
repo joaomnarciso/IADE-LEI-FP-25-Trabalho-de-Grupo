@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Menu {
-    enum MenuOptions{
+    enum MenuOptions {
         MAIN,
         ROOM,
         GUEST,
@@ -13,7 +13,8 @@ public class Menu {
     public static int subMenuNumber;
     public static boolean exitProgram = false;
 
-    public static void MainMenu(){
+    // Mostra o Menu Principal e lê a opção do utilizador
+    public static void MainMenu() {
         menuOption = MenuOptions.MAIN;
 
         System.out.println("1 - Quartos");
@@ -23,7 +24,8 @@ public class Menu {
         ReadOption();
     }
 
-    public static void RoomMenu(){
+    // Mostra o Menu dos Quartos e lê a opção do utilizador
+    public static void RoomMenu() {
         System.out.println("1 - Listar todos os quartos");
         System.out.println("2 - Listar quartos livres");
         System.out.println("3 - Listar quartos ocupados");
@@ -33,17 +35,19 @@ public class Menu {
         ReadOption();
     }
 
-    public static void GuestMenu(){
+    // Mostra o Menu dos Hóspedes e lê a opção do utilizador
+    public static void GuestMenu() {
         System.out.println("1 - Listar hospedes");
         System.out.println("2 - Procurar hospede por documento");
         System.out.println("3 - Editar hospede");
         System.out.println("4 - Sair");
-        
+
         menuOption = MenuOptions.GUEST;
         ReadOption();
     }
 
-    public static void ReservationMenu(){
+    // Mostra o Menu das Reservas e lê a opção do utilizador
+    public static void ReservationMenu() {
         System.out.println("1 - Criar Reserva");
         System.out.println("2 - Listar todas as reservas");
         System.out.println("3 - Listar reservas por quarto");
@@ -51,15 +55,17 @@ public class Menu {
         System.out.println("5 - Editar reserva");
         System.out.println("6 - Cancelar reserva");
         System.out.println("7 - Sair");
-        
+
         menuOption = MenuOptions.RESERVATION;
         ReadOption();
     }
 
-    private static void ReadOption(){
+    // Lê a opção do utilizador e redireciona para o respetivo Menu ou função
+    private static void ReadOption() {
         Scanner input = new Scanner(System.in);
 
-        if(menuOption == MenuOptions.MAIN){
+        // O utilizador está no Menu Principal
+        if (menuOption == MenuOptions.MAIN) {
             menuNumber = input.nextInt();
             switch (menuNumber) {
                 case 1:
@@ -78,30 +84,32 @@ public class Menu {
                     menuNumber = 4;
                     exitProgram = true;
                     System.out.println("Adeus");
-                    break;                     
+                    break;
                 default:
-                    System.out.println("Opcao invalida"); 
+                    System.out.println("Opcao invalida");
                     break;
             }
         }
-        else{
+
+        // O utilizador está dentro de um Submenu
+        else {
             subMenuNumber = input.nextInt();
             switch (menuOption.name().toString()) {
-                case  "ROOM":
-                    
-                case  "GUEST":
-                    if(subMenuNumber == 4){
+                case "ROOM":
+
+                case "GUEST":
+                    if (subMenuNumber == 4) {
                         menuOption = MenuOptions.MAIN;
                         MainMenu();
                     }
                     break;
-                case  "RESERVATION":
-                    if(subMenuNumber == 7){
+                case "RESERVATION":
+                    if (subMenuNumber == 7) {
                         menuOption = MenuOptions.MAIN;
                         MainMenu();
                     }
                     break;
-            
+
                 default:
                     break;
             }
