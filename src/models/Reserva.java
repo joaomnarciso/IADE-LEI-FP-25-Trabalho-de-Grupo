@@ -1,70 +1,26 @@
-package model;
+package models;
 
 import java.time.LocalDate;
 
 public class Reserva {
-    private int id;
-    private int idQuarto;
-    private int idHospede;
-    private int numeroHospedes;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
-    private boolean ativa;
+    public int id;
+    public int idQuarto;
+    public int idHospede;
+    public int numeroHospedes;
+    public LocalDate dataInicio;
+    public LocalDate dataFim;
+    public boolean ativa;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getIdQuarto() {
-        return idQuarto;
-    }
-
-    public void setIdQuarto(int idQuarto) {
-        this.idQuarto = idQuarto;
-    }
-
-    public int getIdHospede() {
-        return idHospede;
-    }
-
-    public void setIdHospede(int idHospede) {
-        this.idHospede = idHospede;
-    }
-
-    public int getNumeroHospedes() {
-        return numeroHospedes;
-    }
-
-    public void setNumeroHospedes(int numeroHospedes) {
-        this.numeroHospedes = numeroHospedes;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public boolean isAtiva() {
-        return ativa;
-    }
-
-    public void setAtiva(boolean ativa) {
-        this.ativa = ativa;
+    // Construtor da Classe
+    public Reserva(int _id, int _idQuarto, int _idHospede, int _numeroHospedes, LocalDate _dataInicio,
+            LocalDate _dataFim, boolean _ativa) {
+        this.id = _id;
+        this.idQuarto = _idQuarto;
+        this.idHospede = _idHospede;
+        this.numeroHospedes = _numeroHospedes;
+        this.dataInicio = _dataInicio;
+        this.dataFim = _dataFim;
+        this.ativa = _ativa;
     }
 
 }

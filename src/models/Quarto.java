@@ -1,40 +1,16 @@
-package model;
+package models;
 
 public class Quarto {
-    private int id;
-    private int numero;
-    private int capacidade;
-    private boolean estaOcupado;
+    public int id;
+    public int numero;
+    public int capacidade;
+    public boolean estaOcupado;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public void setNumero(int numero) {
-        this.numero = numero;
-    }
-
-    public int getCapacidade() {
-        return capacidade;
-    }
-
-    public void setCapacidade(int capacidade) {
-        this.capacidade = capacidade;
-    }
-
-    public boolean isEstaOcupado() {
-        return estaOcupado;
-    }
-
-    public void setEstaOcupado(boolean estaOcupado) {
-        this.estaOcupado = estaOcupado;
+    // Construtor da Classe
+    public Quarto(int _id, int _numero, int _capacidade, boolean _estaOcupado) {
+        this.id = _id;
+        this.numero = _numero;
+        this.capacidade = _capacidade;
+        this.estaOcupado = _estaOcupado;
     }
 }

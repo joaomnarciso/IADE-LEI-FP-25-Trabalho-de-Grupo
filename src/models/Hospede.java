@@ -1,32 +1,15 @@
-package model;
+package models;
 
 public class Hospede {
-    private int id;
-    private String nome;
-    private String documento;
+    public int id;
+    public String nome;
+    public String documento;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
+    // Construtor da Classe
+    public Hospede(int _id, String _nome, String _documento) {
+        this.id = _id;
+        this.nome = _nome;
+        this.documento = _documento;
     }
 
 }
