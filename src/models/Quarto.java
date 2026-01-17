@@ -1,16 +1,32 @@
 package models;
 
 public class Quarto {
-    public int id;
-    public int numero;
-    public int capacidade;
-    public boolean estaOcupado;
+    private int id;
+    private int numero;
+    private int capacidade;
+    private boolean estaOcupado;
 
-    // Construtor da Classe
-    public Quarto(int _id, int _numero, int _capacidade, boolean _estaOcupado) {
-        this.id = _id;
-        this.numero = _numero;
-        this.capacidade = _capacidade;
-        this.estaOcupado = _estaOcupado;
+    // Construtor
+    public Quarto(int id, int numero, int capacidade, boolean estaOcupado) {
+        this.id = id;
+        this.numero = numero;
+        this.capacidade = capacidade;
+        this.estaOcupado = estaOcupado;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
+    }
+
+    public boolean isEstaOcupado() {
+        return estaOcupado;
     }
 }
