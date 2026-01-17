@@ -120,7 +120,26 @@ public class QuartoController {
             System.out.println("Não foi encontrado quarto com o número '"+numero+"'.");
             return;
         }
+
+
     }
+
+    public void criarQuarto(int numero, int capacidade, boolean estaOcupado) {
+        if (totalQuartos >= MAX_QUARTOS) {
+            System.out.println("Não é possível adicionar novos quartos. Número máximo de "+MAX_QUARTOS+" no sistema foi atingido.");
+            return;
+        }
+
+        int novoId = totalQuartos + 1;
+
+        Quarto novoQuarto = new Quarto(novoId, numero, capacidade, estaOcupado);
+        quartos[totalQuartos] = novoQuarto;
+        totalQuartos++;
+
+        System.out.println("Quarto created successfully:");
+        System.out.println("ID: " + novoQuarto.getId() +" | Numero: " + novoQuarto.getNumero() +" | Capacidade: " + novoQuarto.getCapacidade() +" | Ocupado: " + novoQuarto.isEstaOcupado());
+    }
+
 
     public int getTotalQuartos() {
         return totalQuartos;
