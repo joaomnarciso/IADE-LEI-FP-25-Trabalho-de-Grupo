@@ -2,166 +2,156 @@ package controllers;
 
 import models.Quarto;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-/**
- * Controller para Quartos
- *
- */
+import java.io.*;
 
 public class QuartoController {
-
-    private static final String FICHEIRO_CSV = "src/media/quartos.csv";
-    private static final int MAX_QUARTOS = 200;
-
     private Quarto[] quartos;
     private int totalQuartos;
+    private static final int MAX_QUARTOS = 200;
+    private static final String FICHEIRO = "src/media/quartos.csv";
 
     public QuartoController() {
         this.quartos = new Quarto[MAX_QUARTOS];
         this.totalQuartos = 0;
     }
 
-    /**
-     * Carrega todos os quartos guardados no respectivo ficheiro CSV para o array quartos
-     *
-     */
-    public void carregarQuartos() {
-        totalQuartos = 0;
+    public void listarTodosQuartos() {
+        System.out.println("\n=== TODOS OS QUARTOS ===");
+        if (totalQuartos == 0) {
+            System.out.printf("Não foram encontrados quartos no ficheiro '%s'.\n", FICHEIRO);
+            return;
+        }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FICHEIRO_CSV))) {
-            String linha;
+        for (int i = 0; i < totalQuartos; i++) {
+            Quarto q = quartos[i];
+            System.out.printf("ID: %d | Número: %d | Capacidade: %d | Ocupado: %s\n",
+                    q.getId(), q.getNumero(), q.getCapacidade(),
+                    q.getOcupado() ? "Sim" : "Não");
+        }
+    }
 
-            br.readLine();
+    public void listarQuartosLivres() {
+        System.out.println("\n=== QUARTOS LIVRES ===");
+        int quartosLivres = 0;
 
-            while ((linha = br.readLine()) != null && totalQuartos < MAX_QUARTOS) {
-                if (linha.trim().isEmpty()) {
-                    continue;
+        for (int i = 0; i < totalQuartos; i++) {
+            Quarto q = quartos[i];
+            if (!q.getOcupado()) {
+                System.out.printf("ID: %d | Número: %d | Capacidade: %d\n",
+                        q.getId(), q.getNumero(), q.getCapacidade());
+                quartosLivres++;
+            }
+        }
+
+        if (quartosLivres == 0) {
+            System.out.println("Não existem quartos livres.");
+        }
+    }
+
+    public void listarQuartosOcupados() {
+        System.out.println("\n=== QUARTOS OCUPADOS ===");
+        int quartosOcupados = 0;
+
+        for (int i = 0; i < totalQuartos; i++) {
+            Quarto q = quartos[i];
+            if (q.getOcupado()) {
+                System.out.printf("ID: %d | Número: %d | Capacidade: %d\n",
+                        q.getId(), q.getNumero(), q.getCapacidade());
+                quartosOcupados++;
+            }
+        }
+
+        if (quartosOcupados == 0) {
+            System.out.println("Não existem quartos ocupados.");
+        }
+    }
+
+    public void listarQuartoEspecifico(int id) {
+        Quarto quarto = encontrarQuartoPorId(id);
+
+        if (quarto == null) {
+            System.out.println("Quarto não encontrado.");
+            return;
+        }
+
+        System.out.println("\n=== DETALHES DO QUARTO ===");
+        System.out.printf("ID: %d | Número: %d | Capacidade: %d | Ocupado: %s\n",
+                quarto.getId(), quarto.getNumero(), quarto.getCapacidade(),
+                quarto.getOcupado() ? "Sim" : "Não");
+    }
+
+    public Quarto encontrarQuartoPorId(int id) {
+        for (int i = 0; i < totalQuartos; i++) {
+            if (quartos[i].getId() == id) {
+                return quartos[i];
+            }
+        }
+        return null;
+    }
+
+    public Quarto encontrarQuartoLivreAdequado(int numeroHospedes) {
+        Quarto melhorQuarto = null;
+        int menorDiferenca = Integer.MAX_VALUE;
+
+        for (int i = 0; i < totalQuartos; i++) {
+            Quarto q = quartos[i];
+            if (!q.getOcupado() && q.getCapacidade() >= numeroHospedes) {
+                int diferenca = q.getCapacidade() - numeroHospedes;
+                if (diferenca < menorDiferenca) {
+                    menorDiferenca = diferenca;
+                    melhorQuarto = q;
                 }
+            }
+        }
 
-                String[] dados = linha.split(";");
+        return melhorQuarto;
+    }
 
-                int id = Integer.parseInt(dados[0].trim());
-                int numero = Integer.parseInt(dados[1].trim());
-                int capacidade = Integer.parseInt(dados[2].trim());
+    public void atualizarOcupacao(int idQuarto, boolean ocupado) {
+        Quarto quarto = encontrarQuartoPorId(idQuarto);
+        if (quarto != null) {
+            quarto.setOcupado(ocupado);
+        }
+    }
 
-                boolean estaOcupado = dados[3].trim().equals("1");
-
-                Quarto quarto = new Quarto(id, numero, capacidade, estaOcupado);
-                quartos[totalQuartos] = quarto;
-                totalQuartos++;
+    public void carregarDados() {
+        try {
+            File ficheiro = new File(FICHEIRO);
+            if (!ficheiro.exists()) {
+                System.out.printf("O sistema não encontrou o ficheiro '%s'.\n", FICHEIRO);
+                return;
             }
 
+            BufferedReader reader = new BufferedReader(new FileReader(ficheiro));
+            String linha;
+            totalQuartos = 0;
+
+            linha = reader.readLine();
+
+            while ((linha = reader.readLine()) != null && totalQuartos < MAX_QUARTOS) {
+                String[] partes = linha.split(";");
+                if (partes.length >= 3) {
+                    int id = Integer.parseInt(partes[0].trim());
+                    int numero = Integer.parseInt(partes[1].trim());
+                    int capacidade = Integer.parseInt(partes[2].trim());
+
+                    quartos[totalQuartos++] = new Quarto(id, numero, capacidade);
+                }
+            }
+
+            reader.close();
         } catch (IOException e) {
-            System.out.println("Não foi possivel ler o ficheiro com os quartos: " + e.getMessage());
+            System.out.println("Erro ao carregar quartos no array: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Erro no formato dos dados dos quartos: " + e.getMessage());
         }
-    }
-
-    public void todosQuartos() {
-        if(quartos.length == 0){
-            this.carregarQuartos();
-        }
-        if (totalQuartos == 0) {
-            System.out.println("Não foram encontrados quartos. Por favor insira.");
-            return;
-        }
-
-        System.out.println("Quartos:");
-        for (int i = 0; i < totalQuartos; i++) {
-            Quarto q = quartos[i];
-            System.out.println("ID: " + q.getId() + " | Numero: " + q.getNumero()+" | Capacidade: " + q.getCapacidade() +" | Ocupado: " + q.isEstaOcupado());
-        }
-    }
-
-    public void mostraQuartosDisponiveis() {
-        if(quartos.length == 0){
-            this.carregarQuartos();
-        }
-        if (totalQuartos == 0) {
-            System.out.println("Não foram encontrados disponiveis.");
-            return;
-        }
-
-        System.out.println("Quartos:");
-        for (int i = 0; i < totalQuartos; i++) {
-            Quarto q = quartos[i];
-
-            if(!q.isEstaOcupado()) {
-                System.out.println("ID: " + q.getId() + " | Numero: " + q.getNumero()+" | Capacidade: " + q.getCapacidade() +" | Ocupado: " + q.isEstaOcupado());
-            }
-
-        }
-    }
-
-    public void mostraQuartosOcupados() {
-        if(quartos.length == 0){
-            this.carregarQuartos();
-        }
-        if (totalQuartos == 0) {
-            System.out.println("Não foram encontrados quartos ocupados.");
-            return;
-        }
-
-        System.out.println("Quartos:");
-        for (int i = 0; i < totalQuartos; i++) {
-            Quarto q = quartos[i];
-
-            if(q.isEstaOcupado()) {
-                System.out.println("ID: " + q.getId() + " | Numero: " + q.getNumero()+" | Capacidade: " + q.getCapacidade() +" | Ocupado: " + q.isEstaOcupado());
-            }
-
-        }
-    }
-
-    public void mostrarQuartoPorNumero(int numero) {
-        if(quartos[numero] == null){
-            System.out.println("Não foi encontrado quarto com o número '"+numero+"'.");
-            return;
-        }
-
-
-    }
-
-    public void criarQuarto(int numero, int capacidade, boolean estaOcupado) {
-        if (totalQuartos >= MAX_QUARTOS) {
-            System.out.println("Não é possível adicionar novos quartos. Número máximo de "+MAX_QUARTOS+" no sistema foi atingido.");
-            return;
-        }
-
-        int novoId = totalQuartos + 1;
-
-        Quarto novoQuarto = new Quarto(novoId, numero, capacidade, estaOcupado);
-        quartos[totalQuartos] = novoQuarto;
-        totalQuartos++;
-
-        System.out.println("Quarto created successfully:");
-        System.out.println("ID: " + novoQuarto.getId() +" | Numero: " + novoQuarto.getNumero() +" | Capacidade: " + novoQuarto.getCapacidade() +" | Ocupado: " + novoQuarto.isEstaOcupado());
-    }
-
-
-    public int getTotalQuartos() {
-        return totalQuartos;
     }
 
     public Quarto[] getQuartos() {
         return quartos;
     }
 
-    public Quarto getQuartoPorIndice(int indice) {
-        if (indice < 0 || indice >= totalQuartos) {
-            return null;
-        }
-        return quartos[indice];
-    }
-
-    public Quarto getQuartoPorNumero(int numero) {
-        for (int i = 0; i < totalQuartos; i++) {
-            if (quartos[i].getNumero() == numero) {
-                return quartos[i];
-            }
-        }
-        return null;
+    public int getTotalQuartos() {
+        return totalQuartos;
     }
 }

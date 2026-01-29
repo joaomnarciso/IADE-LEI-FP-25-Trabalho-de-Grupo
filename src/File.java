@@ -1,4 +1,6 @@
+/*
 import java.util.stream.Stream;
+
 import models.Hospede;
 import models.Quarto;
 import models.Reserva;
@@ -46,16 +48,14 @@ public class File {
                 // Traduz cada quarto para uma string de acordo com o ficheiro csv original
                 for (Quarto quarto : App.quartos) {
                     if (quarto != null) {
-                        String quartoId = String.valueOf(quarto.id);
-                        String quartoNumero = String.valueOf(quarto.numero);
-                        String quartoCapacidade = String.valueOf(quarto.capacidade);
-                        String quartoOcupado = quarto.estaOcupado ? "1" : "0";
+                        String quartoId = String.valueOf(quarto.getId());
+                        String quartoNumero = String.valueOf(quarto.getNumero());
+                        String quartoCapacidade = String.valueOf(quarto.getCapacidade());
 
                         fileToSave[lineNumber + 1] = String.format("%s;%s;%s;%s",
                                 quartoId,
                                 quartoNumero,
-                                quartoCapacidade,
-                                quartoOcupado);
+                                quartoCapacidade);
 
                         lineNumber++;
                     } else {
@@ -152,3 +152,5 @@ public class File {
         }
     }
 }
+
+ */

@@ -1,4 +1,83 @@
 package validators;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class ReservaValidator {
+
+    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static boolean validarNumeroHospedes(int numeroHospedes, int capacidadeQuarto) {
+        return numeroHospedes >= 1 && numeroHospedes <= capacidadeQuarto;
+    }
+
+    public static boolean validarFormatoData(String data) {
+        if (data == null || data.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            LocalDate.parse(data, FORMATO_DATA);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean validarOrdemDatas(String dataInicio, String dataFim) {
+        try {
+            LocalDate inicio = LocalDate.parse(dataInicio, FORMATO_DATA);
+            LocalDate fim = LocalDate.parse(dataFim, FORMATO_DATA);
+            return !inicio.isAfter(fim);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean verificarSobreposicaoDatas(String dataInicio1, String dataFim1,
+                                                     String dataInicio2, String dataFim2) {
+        try {
+            LocalDate inicio1 = LocalDate.parse(dataInicio1, FORMATO_DATA);
+            LocalDate fim1 = LocalDate.parse(dataFim1, FORMATO_DATA);
+            LocalDate inicio2 = LocalDate.parse(dataInicio2, FORMATO_DATA);
+            LocalDate fim2 = LocalDate.parse(dataFim2, FORMATO_DATA);
+
+            return !(fim1.isBefore(inicio2) || inicio1.isAfter(fim2));
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean verificarReservaVigente(String dataInicio, String dataFim) {
+        try {
+            LocalDate hoje = LocalDate.now();
+            LocalDate inicio = LocalDate.parse(dataInicio, FORMATO_DATA);
+            LocalDate fim = LocalDate.parse(dataFim, FORMATO_DATA);
+
+            return !hoje.isBefore(inicio) && !hoje.isAfter(fim);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static String obterMensagemErroNumeroHospedes(int capacidade) {
+        return String.format("Número de hóspedes deve estar entre 1 e %d (capacidade do quarto).", capacidade);
+    }
+
+    public static String obterMensagemErroFormatoData() {
+        return "Formato de data inválido. Use YYYY-MM-DD (exemplo: 2026-01-15).";
+    }
+
+    public static String obterMensagemErroOrdemDatas() {
+        return "Data de início deve ser anterior ou igual à data de fim.";
+    }
+
+    public static String obterMensagemErroSobreposicao() {
+        return "Já existe uma reserva ativa para este quarto no período especificado.";
+    }
+
+    public static String obterMensagemErroCapacidade() {
+        return "Capacidade do quarto insuficiente para o número de hóspedes.";
+    }
 }

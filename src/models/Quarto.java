@@ -6,12 +6,11 @@ public class Quarto {
     private int capacidade;
     private boolean estaOcupado;
 
-    // Construtor
-    public Quarto(int id, int numero, int capacidade, boolean estaOcupado) {
+    public Quarto(int id, int numero, int capacidade) {
         this.id = id;
         this.numero = numero;
         this.capacidade = capacidade;
-        this.estaOcupado = estaOcupado;
+        this.estaOcupado = false;
     }
 
     public int getId() {
@@ -26,7 +25,13 @@ public class Quarto {
         return capacidade;
     }
 
-    public boolean isEstaOcupado() {
+    //estaOcupado... nao é muito intuitivo... faria mais sentido "ocupado" bool
+    public boolean getOcupado() {
         return estaOcupado;
     }
+
+    public void setOcupado(boolean ocupado) {
+        this.estaOcupado = ocupado;
+    }
+
 }
