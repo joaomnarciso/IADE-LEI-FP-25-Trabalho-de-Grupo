@@ -49,7 +49,7 @@ public class ReservaMenu {
                 case 7:
                     break;
                 default:
-                    System.out.println("Opcao invalida");
+                    System.out.println("Opção '"+subMenuNumber+"' inválida.");
             }
         } while (subMenuNumber != 7);
     }

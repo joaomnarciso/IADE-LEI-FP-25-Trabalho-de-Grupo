@@ -29,8 +29,7 @@ public class HospedeController {
 
         for (int i = 0; i < totalHospedes; i++) {
             Hospede h = hospedes[i];
-            System.out.printf("ID: %d | Nome: %s | Documento: %s\n",
-                    h.getId(), h.getNome(), h.getDocumento());
+            System.out.printf("ID: %d | Nome: %s | Documento: %s\n", h.getId(), h.getNome(), h.getDocumento());
         }
     }
 
@@ -208,11 +207,4 @@ public class HospedeController {
         }
     }
 
-    public Hospede[] getHospedes() {
-        return hospedes;
-    }
-
-    public int getTotalHospedes() {
-        return totalHospedes;
-    }
 }

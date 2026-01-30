@@ -118,8 +118,7 @@ public class ReservaController {
             Quarto q = quartoController.encontrarQuartoPorId(r.getIdQuarto());
             Hospede h = hospedeController.encontrarHospedePorId(r.getIdHospede());
 
-            System.out.printf("ID: %d | Quarto: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",
-                    r.getId(), q != null ? q.getNumero() : 0,
+            System.out.printf("Nº Reserva: %d | Quarto: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",r.getId(), q != null ? q.getNumero() : 0,
                     h != null ? h.getNome() : "Desconhecido",
                     r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
                     r.isAtiva() ? "Sim" : "Não");
@@ -128,52 +127,44 @@ public class ReservaController {
 
     public void listarReservasPorQuarto(int idQuarto) {
         System.out.println("\n=== RESERVAS DO QUARTO ===");
-        boolean encontrou = false;
-        LocalDate hoje = LocalDate.now();
+
+        int contadorReservas = 0;
 
         for (int i = 0; i < totalReservas; i++) {
             Reserva r = reservas[i];
             if (r.getIdQuarto() == idQuarto) {
-                LocalDate dataFim = LocalDate.parse(r.getDataFim(), FORMATO_DATA);
+                Hospede h = hospedeController.encontrarHospedePorId(r.getIdHospede());
+                System.out.printf("Nº Reserva: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",
+                        r.getId(), h != null ? h.getNome() : "Desconhecido",
+                        r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
+                        r.isAtiva() ? "Sim" : "Não");
+                contadorReservas++;
 
-                if (!dataFim.isBefore(hoje)) {
-                    Hospede h = hospedeController.encontrarHospedePorId(r.getIdHospede());
-                    System.out.printf("ID: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",
-                            r.getId(), h != null ? h.getNome() : "Desconhecido",
-                            r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
-                            r.isAtiva() ? "Sim" : "Não");
-                    encontrou = true;
-                }
             }
         }
 
-        if (!encontrou) {
+        if (contadorReservas == 0) {
             System.out.println("Não existem reservas presentes ou futuras para este quarto.");
         }
     }
 
     public void listarReservasPorHospede(int idHospede) {
         System.out.println("\n=== RESERVAS DO HÓSPEDE ===");
-        boolean encontrou = false;
-        LocalDate hoje = LocalDate.now();
+        Hospede h = hospedeController.encontrarHospedePorId(idHospede);
+        System.out.printf("Nº Hóspede: %d | Nome: %s | Documento: %s\n", h.getId(), h.getNome(), h.getDocumento());
+
+        int numeroDeReservas = 0;
 
         for (int i = 0; i < totalReservas; i++) {
             Reserva r = reservas[i];
             if (r.getIdHospede() == idHospede) {
-                LocalDate dataFim = LocalDate.parse(r.getDataFim(), FORMATO_DATA);
-
-                if (!dataFim.isBefore(hoje)) {
-                    Quarto q = quartoController.encontrarQuartoPorId(r.getIdQuarto());
-                    System.out.printf("ID: %d | Quarto: %d | Pessoas: %d | %s a %s | Ativa: %s\n",
-                            r.getId(), q != null ? q.getNumero() : 0,
-                            r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
-                            r.isAtiva() ? "Sim" : "Não");
-                    encontrou = true;
-                }
+                Quarto q = quartoController.encontrarQuartoPorId(r.getIdQuarto());
+                System.out.printf("Nº Reserva: %d | Quarto: %d | Pessoas: %d | %s a %s | Ativa: %s\n", r.getId(), q != null ? q.getNumero() : 0,r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),r.isAtiva() ? "Sim" : "Não");
+                numeroDeReservas++;
             }
         }
 
-        if (!encontrou) {
+        if (numeroDeReservas == 0) {
             System.out.println("Não existem reservas presentes ou futuras para este hóspede.");
         }
     }
@@ -395,13 +386,4 @@ public class ReservaController {
         }
     }
 
-    public void debugReservas() {
-        System.out.println("\n=== DEBUG RESERVAS ===");
-        System.out.println("Total de reservas: " + totalReservas);
-        for (int i = 0; i < totalReservas; i++) {
-            Reserva r = reservas[i];
-            System.out.printf("Reserva %d: Quarto=%d, Início=%s, Fim=%s, Ativa=%s\n",
-                    r.getId(), r.getIdQuarto(), r.getDataInicio(), r.getDataFim(), r.isAtiva());
-        }
-    }
 }

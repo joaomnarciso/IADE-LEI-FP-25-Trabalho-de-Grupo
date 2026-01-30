@@ -1,5 +1,5 @@
-id;numero;capacidade;estaOcupado
-1;1;2;0
-2;2;2;0
-3;3;4;1
-4;4;4;0
+id;numero;capacidade
+1;1;2
+2;2;2
+3;3;4
+4;4;4

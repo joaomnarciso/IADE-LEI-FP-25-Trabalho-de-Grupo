@@ -16,9 +16,9 @@ public class HospedeMenu {
         int subMenuNumber;
         do {
             System.out.println("\n=== MENU HÓSPEDES ===");
-            System.out.println("1 - Listar hospedes");
-            System.out.println("2 - Procurar hospede por documento");
-            System.out.println("3 - Editar hospede");
+            System.out.println("1 - Mostral todos os hóspedes");
+            System.out.println("2 - Procurar hóspede por documento");
+            System.out.println("3 - Alterar hóspede");
             System.out.println("4 - Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -29,26 +29,26 @@ public class HospedeMenu {
                     hospedeController.listarHospedes();
                     break;
                 case 2:
-                    ProcurarPorDocumento();
+                    procurarHospedePorDocumento();
                     break;
                 case 3:
-                    EditarHospede();
+                    alterarHospede();
                     break;
                 case 4:
                     break;
                 default:
-                    System.out.println("Opcao invalida");
+                    System.out.println("Opção '"+subMenuNumber+"' inválida.");
             }
         } while (subMenuNumber != 4);
     }
 
-    private void ProcurarPorDocumento() {
+    private void procurarHospedePorDocumento() {
         System.out.print("Documento do hóspede: ");
         String documento = scanner.nextLine();
         hospedeController.procurarPorDocumento(documento);
     }
 
-    private void EditarHospede() {
+    private void alterarHospede() {
         System.out.print("ID do hóspede: ");
         int idHospede = ReadOption();
         hospedeController.editarHospede(idHospede, scanner);

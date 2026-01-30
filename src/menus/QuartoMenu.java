@@ -16,10 +16,11 @@ public class QuartoMenu {
         int subMenuNumber;
         do {
             System.out.println("\n=== MENU QUARTOS ===");
-            System.out.println("1 - Listar todos os quartos");
-            System.out.println("2 - Listar quartos livres");
-            System.out.println("3 - Listar quartos ocupados");
-            System.out.println("4 - Sair");
+            System.out.println("1 - Mostrar todos os quartos");
+            System.out.println("2 - Mostrar todos quartos livres");
+            System.out.println("3 - Mostrar todos quartos ocupados");
+            System.out.println("4 - Mostrar quarto por número");
+            System.out.println("5 - Sair");
             System.out.print("Escolha uma opção: ");
 
             subMenuNumber = ReadOption();
@@ -35,11 +36,20 @@ public class QuartoMenu {
                     quartoController.listarQuartosOcupados();
                     break;
                 case 4:
+                    mostrarQuartoEspecifico();
+                    break;
+                case 5:
                     break;
                 default:
-                    System.out.println("Opcao invalida");
+                    System.out.println("Opção '"+subMenuNumber+"' inválida.");
             }
-        } while (subMenuNumber != 4);
+        } while (subMenuNumber != 5);
+    }
+
+    private void mostrarQuartoEspecifico() {
+        System.out.print("ID do quarto: ");
+        int idQuarto = ReadOption();
+        quartoController.listarQuartoEspecifico(idQuarto);
     }
 
     private int ReadOption() {

@@ -7,12 +7,17 @@ import java.io.*;
 public class QuartoController {
     private Quarto[] quartos;
     private int totalQuartos;
+    private ReservaController reservaController;
     private static final int MAX_QUARTOS = 200;
     private static final String FICHEIRO = "src/media/quartos.csv";
 
     public QuartoController() {
         this.quartos = new Quarto[MAX_QUARTOS];
         this.totalQuartos = 0;
+    }
+
+    public void setReservaController(ReservaController reservaController) {
+        this.reservaController = reservaController;
     }
 
     public void listarTodosQuartos() {
@@ -78,6 +83,11 @@ public class QuartoController {
         System.out.printf("ID: %d | Número: %d | Capacidade: %d | Ocupado: %s\n",
                 quarto.getId(), quarto.getNumero(), quarto.getCapacidade(),
                 quarto.getOcupado() ? "Sim" : "Não");
+
+        if (reservaController != null) {
+            System.out.println("\n--- Reservas deste Quarto ---");
+            reservaController.listarReservasPorQuarto(id);
+        }
     }
 
     public Quarto encontrarQuartoPorId(int id) {

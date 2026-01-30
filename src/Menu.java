@@ -47,7 +47,7 @@ public class Menu {
         System.out.println("1 - Quartos");
         System.out.println("2 - Hospedes");
         System.out.println("3 - Reservas");
-        System.out.println("4 - Sair");
+        System.out.println("4 - Sair e guardar");
         System.out.print("Escolha uma opção: ");
 
         int menuNumber = lerOpcao();
@@ -66,7 +66,7 @@ public class Menu {
                 exitProgram = true;
                 break;
             default:
-                System.out.println("Opcao invalida");
+                System.out.println("Opção '"+menuNumber+"' inválida.");
                 break;
         }
     }
@@ -83,7 +83,7 @@ public class Menu {
         quartoController.carregarDados();
         hospedeController.carregarDados();
         reservaController.carregarDados();
-        System.out.println("Dados carregados com sucesso!");
+        //System.out.println("Dados carregados com sucesso!");
     }
 
     private void guardarDados() {
