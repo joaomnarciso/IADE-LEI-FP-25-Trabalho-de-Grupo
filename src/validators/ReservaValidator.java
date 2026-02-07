@@ -35,6 +35,36 @@ public class ReservaValidator {
         }
     }
 
+    public static boolean validarDataNaoPassado(String data) {
+        try {
+            LocalDate dataReserva = LocalDate.parse(data, FORMATO_DATA);
+            LocalDate hoje = LocalDate.now();
+            return !dataReserva.isBefore(hoje);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean validarDataFimFuturo(String dataFim) {
+        try {
+            LocalDate fim = LocalDate.parse(dataFim, FORMATO_DATA);
+            LocalDate hoje = LocalDate.now();
+            return fim.isAfter(hoje);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean validarReservaPodeSerEditada(String dataFim) {
+        try {
+            LocalDate fim = LocalDate.parse(dataFim, FORMATO_DATA);
+            LocalDate hoje = LocalDate.now();
+            return !fim.isBefore(hoje);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
     public static boolean verificarSobreposicaoDatas(String dataInicio1, String dataFim1,
                                                      String dataInicio2, String dataFim2) {
         try {
@@ -66,7 +96,7 @@ public class ReservaValidator {
     }
 
     public static String obterMensagemErroFormatoData() {
-        return "Formato de data inválido. Use YYYY-MM-DD (exemplo: 2026-01-15).";
+        return "Formato de data inválido. Use AAAA-MM-DD (exemplo: 2026-01-15).";
     }
 
     public static String obterMensagemErroOrdemDatas() {
@@ -79,5 +109,17 @@ public class ReservaValidator {
 
     public static String obterMensagemErroCapacidade() {
         return "Capacidade do quarto insuficiente para o número de hóspedes.";
+    }
+
+    public static String obterMensagemErroDataPassado() {
+        return "A data de início não pode ser no passado. Deve ser hoje ou uma data futura.";
+    }
+
+    public static String obterMensagemErroDataFimPassado() {
+        return "A data de fim não pode ser no passado. Deve ser uma data futura.";
+    }
+
+    public static String obterMensagemErroReservaJaTerminou() {
+        return "Erro: Não é possível editar ou cancelar uma reserva que já terminou.";
     }
 }

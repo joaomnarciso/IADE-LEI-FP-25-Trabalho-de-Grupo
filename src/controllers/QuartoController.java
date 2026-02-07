@@ -85,8 +85,7 @@ public class QuartoController {
                 quarto.getOcupado() ? "Sim" : "Não");
 
         if (reservaController != null) {
-            System.out.println("\n--- Reservas deste Quarto ---");
-            reservaController.listarReservasPorQuarto(id);
+            this.reservaController.listarReservasPorQuarto(id);
         }
     }
 

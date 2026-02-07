@@ -78,10 +78,20 @@ public class ReservaController {
             return;
         }
 
+        if (!ReservaValidator.validarDataNaoPassado(dataInicio)) {
+            System.out.println(ReservaValidator.obterMensagemErroDataPassado());
+            return;
+        }
+
+        if (!ReservaValidator.validarDataFimFuturo(dataFim)) {
+            System.out.println(ReservaValidator.obterMensagemErroDataFimPassado());
+            return;
+        }
+
         Quarto quarto = quartoController.encontrarQuartoLivreAdequado(numeroHospedes);
 
         if (quarto == null) {
-            System.out.println("Erro: Não há quartos disponíveis com capacidade adequada.");
+            System.out.printf("Erro: Não há quartos disponíveis com capacidade para %d hóspedes.\n", numeroHospedes);
             return;
         }
 
@@ -109,7 +119,7 @@ public class ReservaController {
     public void listarTodasReservas() {
         System.out.println("\n=== TODAS AS RESERVAS ===");
         if (totalReservas == 0) {
-            System.out.println("Não existem reservas registadas.");
+            System.out.println("Não existem reservas.");
             return;
         }
 
@@ -118,7 +128,8 @@ public class ReservaController {
             Quarto q = quartoController.encontrarQuartoPorId(r.getIdQuarto());
             Hospede h = hospedeController.encontrarHospedePorId(r.getIdHospede());
 
-            System.out.printf("Nº Reserva: %d | Quarto: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",r.getId(), q != null ? q.getNumero() : 0,
+            System.out.printf("Nº Reserva: %d | Quarto: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",
+                    r.getId(), q != null ? q.getNumero() : 0,
                     h != null ? h.getNome() : "Desconhecido",
                     r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
                     r.isAtiva() ? "Sim" : "Não");
@@ -139,7 +150,6 @@ public class ReservaController {
                         r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
                         r.isAtiva() ? "Sim" : "Não");
                 contadorReservas++;
-
             }
         }
 
@@ -159,7 +169,10 @@ public class ReservaController {
             Reserva r = reservas[i];
             if (r.getIdHospede() == idHospede) {
                 Quarto q = quartoController.encontrarQuartoPorId(r.getIdQuarto());
-                System.out.printf("Nº Reserva: %d | Quarto: %d | Pessoas: %d | %s a %s | Ativa: %s\n", r.getId(), q != null ? q.getNumero() : 0,r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),r.isAtiva() ? "Sim" : "Não");
+                System.out.printf("Nº Reserva: %d | Quarto: %d | Pessoas: %d | %s a %s | Ativa: %s\n",
+                        r.getId(), q != null ? q.getNumero() : 0,
+                        r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
+                        r.isAtiva() ? "Sim" : "Não");
                 numeroDeReservas++;
             }
         }
@@ -177,8 +190,8 @@ public class ReservaController {
             return;
         }
 
-        if (!reserva.isAtiva()) {
-            System.out.println("Erro: Não é possível editar uma reserva que já passou (inativa).");
+        if (!ReservaValidator.validarReservaPodeSerEditada(reserva.getDataFim())) {
+            System.out.println(ReservaValidator.obterMensagemErroReservaJaTerminou());
             return;
         }
 
@@ -214,6 +227,16 @@ public class ReservaController {
             return;
         }
 
+        if (!ReservaValidator.validarDataNaoPassado(dataInicio)) {
+            System.out.println(ReservaValidator.obterMensagemErroDataPassado());
+            return;
+        }
+
+        if (!ReservaValidator.validarDataFimFuturo(dataFim)) {
+            System.out.println(ReservaValidator.obterMensagemErroDataFimPassado());
+            return;
+        }
+
         Quarto quarto = quartoController.encontrarQuartoPorId(reserva.getIdQuarto());
 
         if (!ReservaValidator.validarNumeroHospedes(numeroHospedes, quarto.getCapacidade())) {
@@ -243,8 +266,8 @@ public class ReservaController {
             return;
         }
 
-        if (!reserva.isAtiva()) {
-            System.out.println("Esta reserva já não está ativa (data já passou).");
+        if (!ReservaValidator.validarReservaPodeSerEditada(reserva.getDataFim())) {
+            System.out.println(ReservaValidator.obterMensagemErroReservaJaTerminou());
             return;
         }
 
@@ -385,5 +408,4 @@ public class ReservaController {
             System.out.println("Erro ao guardar reservas: " + e.getMessage());
         }
     }
-
 }

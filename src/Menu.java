@@ -21,7 +21,9 @@ public class Menu {
         this.quartoController = new QuartoController();
         this.hospedeController = new HospedeController();
         this.reservaController = new ReservaController();
+
         this.reservaController.setControllers(quartoController, hospedeController);
+        this.quartoController.setReservaController(reservaController);
 
         this.quartoMenu = new QuartoMenu(scanner, quartoController);
         this.hospedeMenu = new HospedeMenu(scanner, hospedeController);
