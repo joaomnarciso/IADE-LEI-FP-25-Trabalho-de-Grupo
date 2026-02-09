@@ -132,7 +132,7 @@ public class ReservaController {
                     r.getId(), q != null ? q.getNumero() : 0,
                     h != null ? h.getNome() : "Desconhecido",
                     r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
-                    r.isAtiva() ? "Sim" : "Não");
+                    r.getAtiva() ? "Sim" : "Não");
         }
     }
 
@@ -148,7 +148,7 @@ public class ReservaController {
                 System.out.printf("Nº Reserva: %d | Hóspede: %s | Pessoas: %d | %s a %s | Ativa: %s\n",
                         r.getId(), h != null ? h.getNome() : "Desconhecido",
                         r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
-                        r.isAtiva() ? "Sim" : "Não");
+                        r.getAtiva() ? "Sim" : "Não");
                 contadorReservas++;
             }
         }
@@ -172,7 +172,7 @@ public class ReservaController {
                 System.out.printf("Nº Reserva: %d | Quarto: %d | Pessoas: %d | %s a %s | Ativa: %s\n",
                         r.getId(), q != null ? q.getNumero() : 0,
                         r.getNumeroHospedes(), r.getDataInicio(), r.getDataFim(),
-                        r.isAtiva() ? "Sim" : "Não");
+                        r.getAtiva() ? "Sim" : "Não");
                 numeroDeReservas++;
             }
         }
@@ -324,7 +324,7 @@ public class ReservaController {
         for (int i = 0; i < totalReservas; i++) {
             Reserva r = reservas[i];
 
-            if (r.isAtiva()) {
+            if (r.getAtiva()) {
                 Quarto quarto = quartoController.encontrarQuartoPorId(r.getIdQuarto());
                 if (quarto != null) {
                     quarto.setOcupado(true);

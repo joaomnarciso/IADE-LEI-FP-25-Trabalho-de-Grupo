@@ -10,6 +10,7 @@ public class Reserva {
     private int numeroHospedes;
     private String dataInicio;
     private String dataFim;
+    private Boolean ativa;
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Reserva(int id, int idQuarto, int idHospede, int numeroHospedes, String dataInicio, String dataFim) {
@@ -69,7 +70,7 @@ public class Reserva {
         this.dataFim = dataFim;
     }
 
-    public boolean isAtiva() {
+    public boolean getAtiva() {
         try {
             LocalDate hoje = LocalDate.now();
             LocalDate inicio = LocalDate.parse(dataInicio, FORMATO_DATA);
@@ -79,5 +80,9 @@ public class Reserva {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void setAtiva(Boolean ativa) {
+        this.ativa = ativa;
     }
 }
