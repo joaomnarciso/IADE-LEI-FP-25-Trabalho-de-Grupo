@@ -17,4 +17,4 @@
 
 - Relatório técnico: ###
 - Vídeo promocional: https://youtu.be/mc04V9Ho9VM
-- Vídeo: ##
+- Vídeo: https://youtu.be/xGgaLk4i2jI
