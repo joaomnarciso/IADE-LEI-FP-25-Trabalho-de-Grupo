@@ -78,6 +78,11 @@ public class ReservaController {
             return;
         }
 
+        if (!ReservaValidator.validarDataFimAposDataInicio(dataInicio, dataFim)) {
+            System.out.println(ReservaValidator.obterMensagemErroDatasIguais());
+            return;
+        }
+
         if (!ReservaValidator.validarDataNaoPassado(dataInicio)) {
             System.out.println(ReservaValidator.obterMensagemErroDataPassado());
             return;
@@ -88,20 +93,10 @@ public class ReservaController {
             return;
         }
 
-        Quarto quarto = quartoController.encontrarQuartoLivreAdequado(numeroHospedes);
+        Quarto quarto = encontrarMelhorQuartoDisponivel(numeroHospedes, dataInicio, dataFim, -1);
 
         if (quarto == null) {
-            System.out.printf("Erro: Não há quartos disponíveis com capacidade para %d hóspedes.\n", numeroHospedes);
-            return;
-        }
-
-        if (!ReservaValidator.validarNumeroHospedes(numeroHospedes, quarto.getCapacidade())) {
-            System.out.println(ReservaValidator.obterMensagemErroNumeroHospedes(quarto.getCapacidade()));
-            return;
-        }
-
-        if (verificarSobreposicao(quarto.getId(), dataInicio, dataFim, -1)) {
-            System.out.println(ReservaValidator.obterMensagemErroSobreposicao());
+            System.out.printf("Erro: Não há quartos disponíveis com capacidade para %d hóspedes no período selecionado.\n", numeroHospedes);
             return;
         }
 
@@ -112,8 +107,8 @@ public class ReservaController {
         atualizarOcupacaoQuartos();
 
         System.out.println("Reserva criada com sucesso!");
-        System.out.printf("ID da Reserva: %d | Quarto: %d | Hóspede: %s\n",
-                novaReserva.getId(), quarto.getNumero(), hospede.getNome());
+        System.out.printf("ID da Reserva: %d | Quarto: %d (Capacidade: %d) | Hóspede: %s\n",
+                novaReserva.getId(), quarto.getNumero(), quarto.getCapacidade(), hospede.getNome());
     }
 
     public void listarTodasReservas() {
@@ -161,6 +156,12 @@ public class ReservaController {
     public void listarReservasPorHospede(int idHospede) {
         System.out.println("\n=== RESERVAS DO HÓSPEDE ===");
         Hospede h = hospedeController.encontrarHospedePorId(idHospede);
+
+        if (h == null) {
+            System.out.println("Hóspede não encontrado.");
+            return;
+        }
+
         System.out.printf("Nº Hóspede: %d | Nome: %s | Documento: %s\n", h.getId(), h.getNome(), h.getDocumento());
 
         int numeroDeReservas = 0;
@@ -183,12 +184,20 @@ public class ReservaController {
     }
 
     public void editarReserva(int id, Scanner scanner) {
-        Reserva reserva = encontrarReservaPorId(id);
+        int indiceReserva = -1;
+        for (int i = 0; i < totalReservas; i++) {
+            if (reservas[i].getId() == id) {
+                indiceReserva = i;
+                break;
+            }
+        }
 
-        if (reserva == null) {
+        if (indiceReserva == -1) {
             System.out.println("Reserva não encontrada.");
             return;
         }
+
+        Reserva reserva = reservas[indiceReserva];
 
         if (!ReservaValidator.validarReservaPodeSerEditada(reserva.getDataFim())) {
             System.out.println(ReservaValidator.obterMensagemErroReservaJaTerminou());
@@ -196,6 +205,13 @@ public class ReservaController {
         }
 
         System.out.println("\n=== EDITAR RESERVA ===");
+        System.out.println("ID da Reserva: " + reserva.getId());
+
+        Quarto quartoAtual = quartoController.encontrarQuartoPorId(reserva.getIdQuarto());
+        if (quartoAtual != null) {
+            System.out.println("Quarto atual: " + quartoAtual.getNumero() + " (Capacidade: " + quartoAtual.getCapacidade() + ")");
+        }
+
         System.out.println("Número de hóspedes atual: " + reserva.getNumeroHospedes());
         System.out.print("Novo número de hóspedes (0 para manter): ");
         int novoNumero = lerInteiro(scanner);
@@ -212,18 +228,23 @@ public class ReservaController {
         String dataFim = novaDataFim.isEmpty() ? reserva.getDataFim() : novaDataFim;
         int numeroHospedes = novoNumero == 0 ? reserva.getNumeroHospedes() : novoNumero;
 
-        if (!ReservaValidator.validarFormatoData(dataInicio)) {
+        if (!novaDataInicio.isEmpty() && !ReservaValidator.validarFormatoData(dataInicio)) {
             System.out.println(ReservaValidator.obterMensagemErroFormatoData());
             return;
         }
 
-        if (!ReservaValidator.validarFormatoData(dataFim)) {
+        if (!novaDataFim.isEmpty() && !ReservaValidator.validarFormatoData(dataFim)) {
             System.out.println(ReservaValidator.obterMensagemErroFormatoData());
             return;
         }
 
         if (!ReservaValidator.validarOrdemDatas(dataInicio, dataFim)) {
             System.out.println(ReservaValidator.obterMensagemErroOrdemDatas());
+            return;
+        }
+
+        if (!ReservaValidator.validarDataFimAposDataInicio(dataInicio, dataFim)) {
+            System.out.println(ReservaValidator.obterMensagemErroDatasIguais());
             return;
         }
 
@@ -237,25 +258,55 @@ public class ReservaController {
             return;
         }
 
-        Quarto quarto = quartoController.encontrarQuartoPorId(reserva.getIdQuarto());
+        Quarto quartoFinal = encontrarMelhorQuartoDisponivel(numeroHospedes, dataInicio, dataFim, id);
 
-        if (!ReservaValidator.validarNumeroHospedes(numeroHospedes, quarto.getCapacidade())) {
-            System.out.println(ReservaValidator.obterMensagemErroNumeroHospedes(quarto.getCapacidade()));
+        if (quartoFinal == null) {
+            System.out.printf("Erro: Não há quartos disponíveis com capacidade para %d hóspedes no período selecionado.\n", numeroHospedes);
             return;
         }
 
-        if (verificarSobreposicao(reserva.getIdQuarto(), dataInicio, dataFim, id)) {
-            System.out.println(ReservaValidator.obterMensagemErroSobreposicao());
-            return;
+        if (quartoAtual != null && quartoFinal.getId() != quartoAtual.getId()) {
+            System.out.printf("Quarto alterado de %d para %d (Capacidade: %d)\n",
+                    quartoAtual.getNumero(), quartoFinal.getNumero(), quartoFinal.getCapacidade());
         }
 
-        reserva.setNumeroHospedes(numeroHospedes);
-        reserva.setDataInicio(dataInicio);
-        reserva.setDataFim(dataFim);
+        reservas[indiceReserva].setIdQuarto(quartoFinal.getId());
+        reservas[indiceReserva].setNumeroHospedes(numeroHospedes);
+        reservas[indiceReserva].setDataInicio(dataInicio);
+        reservas[indiceReserva].setDataFim(dataFim);
 
         atualizarOcupacaoQuartos();
 
         System.out.println("Reserva editada com sucesso!");
+        System.out.printf("Novos valores - Quarto: %d (Capacidade: %d) | Pessoas: %d | %s a %s\n",
+                quartoFinal.getNumero(),
+                quartoFinal.getCapacidade(),
+                reservas[indiceReserva].getNumeroHospedes(),
+                reservas[indiceReserva].getDataInicio(),
+                reservas[indiceReserva].getDataFim());
+    }
+
+    private Quarto encontrarMelhorQuartoDisponivel(int numeroHospedes, String dataInicio, String dataFim, int idReservaExcluir) {
+        Quarto[] quartos = quartoController.getQuartos();
+        int totalQuartos = quartoController.getTotalQuartos();
+
+        Quarto melhorQuarto = null;
+        int menorCapacidade = Integer.MAX_VALUE;
+
+        for (int i = 0; i < totalQuartos; i++) {
+            Quarto quarto = quartos[i];
+
+            if (quarto.getCapacidade() >= numeroHospedes) {
+                if (!verificarSobreposicao(quarto.getId(), dataInicio, dataFim, idReservaExcluir)) {
+                    if (quarto.getCapacidade() < menorCapacidade) {
+                        melhorQuarto = quarto;
+                        menorCapacidade = quarto.getCapacidade();
+                    }
+                }
+            }
+        }
+
+        return melhorQuarto;
     }
 
     public void cancelarReserva(int id) {
@@ -276,6 +327,7 @@ public class ReservaController {
                 for (int j = i; j < totalReservas - 1; j++) {
                     reservas[j] = reservas[j + 1];
                 }
+                reservas[totalReservas - 1] = null;
                 totalReservas--;
                 break;
             }
@@ -286,7 +338,7 @@ public class ReservaController {
         System.out.println("Reserva cancelada com sucesso!");
     }
 
-    private Reserva encontrarReservaPorId(int id) {
+    public Reserva encontrarReservaPorId(int id) {
         for (int i = 0; i < totalReservas; i++) {
             if (reservas[i].getId() == id) {
                 return reservas[i];
@@ -339,6 +391,14 @@ public class ReservaController {
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    public int getTotalReservas() {
+        return totalReservas;
+    }
+
+    public Reserva[] getReservas() {
+        return reservas;
     }
 
     public void carregarDados() {

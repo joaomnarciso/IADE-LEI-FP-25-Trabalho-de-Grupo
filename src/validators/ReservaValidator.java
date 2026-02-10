@@ -35,6 +35,19 @@ public class ReservaValidator {
         }
     }
 
+    /**
+     * Valida se a data de fim é estritamente posterior à data de início (não podem ser iguais)
+     */
+    public static boolean validarDataFimAposDataInicio(String dataInicio, String dataFim) {
+        try {
+            LocalDate inicio = LocalDate.parse(dataInicio, FORMATO_DATA);
+            LocalDate fim = LocalDate.parse(dataFim, FORMATO_DATA);
+            return fim.isAfter(inicio);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
     public static boolean validarDataNaoPassado(String data) {
         try {
             LocalDate dataReserva = LocalDate.parse(data, FORMATO_DATA);
@@ -101,6 +114,10 @@ public class ReservaValidator {
 
     public static String obterMensagemErroOrdemDatas() {
         return "Data de início deve ser anterior ou igual à data de fim.";
+    }
+
+    public static String obterMensagemErroDatasIguais() {
+        return "A data de fim deve ser posterior à data de início. As datas não podem ser iguais.";
     }
 
     public static String obterMensagemErroSobreposicao() {
